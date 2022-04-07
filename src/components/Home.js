@@ -19,9 +19,10 @@ function Home() {
     {/* <Box sx = {{width : '100%',position : 'absolute', height : '70vh',overflow : 'hidden'}}>
       <img src={banner} style = {{width : 'inherit',maxHeight : '70vh'}} alt="" srcset="" />
     </Box> */}
+      
     <br/>
-    <Typography sx = {{position :'relative'}} variant="h4" align = 'center' sx = {{marginTop : '50%'}} component="div">
-      Blog Time         
+    <Typography sx = {{position :'relative',marginTop : '50%'}} variant="h4" align = 'center'  component="div">
+      Blog Time      
       </Typography>
     <br/>
             <Card/>

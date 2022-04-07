@@ -7,9 +7,11 @@ import LogModal from './components/LogModal';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';
 import About from './components/About';
+import SerachBar from 'cb-search-bar/dist/SearchBar'
 import {setModal,auth,trackCard} from './context/Context.js'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AutoFixHighRounded } from '@mui/icons-material';
+import SearchBar from './components/SearchBar';
 
 
 
@@ -29,14 +31,15 @@ function App() {
           <setModal.Provider value = {{stateModal,toogleModal,formType,setFormType}}>  
            <auth.Provider value = {{cerdential,setCred}}>  
            <trackCard.Provider value = {{tracker,setTracker}}>  
-            <Navbar/>
+            {/* <Navbar/> */}
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/search" element={<SearchBar />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/about" element={<About />} />
             </Routes>
             <LogModal/>
-           <Footer/>
+           {/* <Footer/> */}
           </trackCard.Provider>
           </auth.Provider>
         </setModal.Provider>
