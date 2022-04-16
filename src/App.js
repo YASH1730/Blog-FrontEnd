@@ -7,7 +7,7 @@ import LogModal from './components/LogModal';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';
 import About from './components/About';
-import SerachBar from 'cb-search-bar/dist/SearchBar'
+// import SearchBar from 'cb-search-bar/dist/SearchBar'
 import {setModal,auth,trackCard} from './context/Context.js'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AutoFixHighRounded } from '@mui/icons-material';

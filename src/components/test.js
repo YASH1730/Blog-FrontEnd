@@ -1,5 +1,5 @@
 import React from 'react';
-import SerachBar from 'cb-search-bar/dist/SearchBar';
+import SerachBar from './SearchBar';
 
 
 export default function test() {

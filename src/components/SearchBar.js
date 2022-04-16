@@ -1,14 +1,36 @@
 import React,{useState,useEffect} from "react";
-import { TextField, Typography, Grid, Box } from "@mui/material";
+import { TextField, SwipeableDrawer, Grid, Box ,Button,FormLabel,FormControlLabel,FormGroup,Checkbox,Typography} from "@mui/material";
+// import {makeStyles} from '@mui/material/styles'
+import { makeStyles } from '@material-ui/styles';
 import {
   DataGrid,
   gridPageCountSelector,
   gridPageSelector,
   useGridApiContext,
   useGridSelector,
+  
 } from '@mui/x-data-grid';
 import Pagination from '@mui/material/Pagination';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { orange } from '@mui/material/colors';
 import axios from 'axios';
+
+
+const theme = createTheme({
+  palette :{
+    primary :{
+      main : `${orange[900]}`
+    }
+  }
+})
+
+const useStyle  = makeStyles(()=>({
+
+  textfeild: {
+    
+  },
+
+}))
 
 function CustomPagination() {
   const apiRef = useGridApiContext();
@@ -32,17 +54,56 @@ export default function SearchBar() {
 const [courseList,setCourseList] = useState([])
 const [rows,setRows] = useState([])
 
+// for drawer
+const [isDrawerOpen,setIsDrawerOpen] = useState(false)
+
+// importing style
+const classes = useStyle();
+
+const [Filters,setFilters] = useState(
+  {
+
+    Udemy : false,
+    Coursera : false,
+    FutureLearn : false,
+    edX : false,
+    Free : false,
+    Paid : false,
+    Subscription : false,
+  }
+)
+
+// for ckech box handler 
+
+const  handleChange = (e)=>{
+  console.log(e.target.value)
+  console.log(e.target.checked)
+
+
+  setFilters({
+     ...Filters,
+     [e.target.value] : e.target.checked
+  })
+
+
+}
+
 // handelSeacrch bar
   const handelSearch = async(e) =>{
-    console.log(e.target.value)
-
+    // console.log(e.target.value)
+  
     const SearchParam = e.target.value;
 
     if(SearchParam.length >= 5)
     {
 
+      // testting
+      await axios.get(`http://localhost/partner/apis/getCourseList/?filter=${JSON.stringify(Filters)}`)
+      .then((data)=>{console.log(data);})
+      .catch((err)=>{console.log(err);})
+
       // For fetching the data for database
-      await axios.get(`https://api.classbazaar.com/api/v2/courses/?q=${e.target.value}&filter=&subjects=all&provider=all&feeFilter=&startDateFilter=&providerOffset=0::0::0::0::0::0::0`)
+      await axios.get(`https://api.classbazaar.com/api/v2/courses/?q=${e.target.value}&filter=&subjects=all&provider=&feeFilter=&startDateFilter=&providerOffset=0::0::0::0::0::0::0`)
       .then((data)=>{
         setCourseList(data.data.data);
         console.log(data.data.data)
@@ -58,13 +119,13 @@ const [rows,setRows] = useState([])
    // defining the Columns for the data grid
 
 const columns = [
-  {field : 'id',headerName : 'Id',width : 100},
+  {field : 'id',headerName : 'Id',width : 50},
   {field : 'provider',headerName : 'Provider',width : 100},
   {field : 'title',headerName : 'Title',width : 500},
-  {field : 'price',headerName : 'Price',width : 50},
+  {field : 'price',headerName : 'Price (Rs) ',width : 100},
   {field : 'subjects',headerName : 'Subjects',width : 200},
   {field : 'university',headerName : 'University',width : 200},
-  {field : 'ranking_points',headerName : 'Ranking Points',width : 100}];
+  {field : 'start_date',headerName : 'Start Date',width : 200}];
 
   useEffect(() => {
     
@@ -74,9 +135,10 @@ const columns = [
         id : row.index,
         provider : row.provider,
         title : row.title,
+        price : row.price || 'Free',
         subjects : row.subjects,
         university : row.university,
-        ranking_points : row.ranking_points
+        start_date : row.start_date || 'Flexible'
       })}))
     
   }, [courseList]);
@@ -88,46 +150,82 @@ const columns = [
 
   return (
 // MainContainer
-<Grid container sx={{  marginTop : '5%',gap : '50px' }}>
+    <ThemeProvider theme = {theme}>
+<Grid container sx={{  marginTop : '5%' }}>
 
-        {/* Heading section */}
+        {/* Heading section
         <Grid xs={12}>
           <Typography variant="h5" align="center">
             Search Bar By ClassBazar
           </Typography>
         </Grid>
-
+ */}
 
         {/* Search Bar Secton  */}
-        <Grid xs={8} sx = {{boxShadow: 2}} margin = 'auto'>
+        <Grid xs={8} md = {6} sx = {{display : 'flex',columnGap : '30px',justifyContent : 'center',alignItems : 'center'}} margin = 'auto'>
+         
           <TextField
           fullWidth 
           id="outlined-search"
           label="Search Courses"
+          sx = {{boxShadow : 2}}
           type="search" 
           onChange = {handelSearch}
+          className = {classes.textfeild}
           />
+{/* // filter button */}
+          <Button variant = 'contained' onClick = {()=>{setIsDrawerOpen(true)}} color = 'primary' >Filter</Button>
         </Grid>
 
+      </Grid>
+
+
+
         {/* Data Grid Section  */}
-        <Grid xs={11} sx = {{boxShadow: 2}} margin = 'auto'>
+        <Grid sx = {{boxShadow: 2, marginTop : '50px'}} margin = 'auto'>
         
         {
         courseList !== [] && 
-        <Box sx={{ height: 400, width: '100%' }}>
+        <Box sx={{ height: 490, width: '100%', align : 'bottom' }}>
 <DataGrid
   rows = {rows}
   columns = {columns}
   pagination
-  pageSize={5}
-  rowsPerPageOptions={[5]}
+  pageSize={7}
+  rowsPerPageOptions={[7]}
   components={{
     Pagination: CustomPagination,
   }}
 />
 </Box> }
         </Grid>
-      </Grid>
+
+        {/* Drawer section  */}
+          <SwipeableDrawer
+            anchor={'left'}
+            onClose={()=> { setIsDrawerOpen(false)}}
+            open={isDrawerOpen}
+          >
+            <Box p = {2} role = 'Presentation' sx = {{display : 'flex',justifyContent : 'center'}} width = {250} alignItems = 'center'>
+            <FormGroup>
+                  <FormLabel id="demo-radio-buttons-group-label"><Typography variant = 'h6'> Provider </Typography></FormLabel>
+                      <FormControlLabel checked = {Filters.Udemy} control={<Checkbox onChange = {handleChange} value = 'Udemy' />} label="Udemy" />
+                      <FormControlLabel checked = {Filters.Coursera} control={<Checkbox onChange = {handleChange} value = 'Coursera' />} label="Coursera" />
+                      <FormControlLabel checked = {Filters.FutureLearn} control={<Checkbox onChange = {handleChange} value = 'FutureLearn' />} label="Future Learn" />
+                      <FormControlLabel checked = {Filters.edX} control={<Checkbox onChange = {handleChange} value = 'edX' />} label="edX" />
+                      <br></br>
+                  <FormLabel id="demo-radio-buttons-group-label"><Typography variant = 'h6'> Price </Typography></FormLabel>
+                      <FormControlLabel checked = {Filters.Free} control={<Checkbox onChange = {handleChange} value = 'Free' />} label="Free" />
+                      <FormControlLabel checked = {Filters.Paid} control={<Checkbox onChange = {handleChange} value = 'Paid' />} label="Paid" />
+                      <FormControlLabel checked = {Filters.Subscription} control={<Checkbox onChange = {handleChange} value = 'Subscription' />} label="Subscription" />
+            </FormGroup>
+            </Box>
+            {/* {list(anchor)} */}
+          </SwipeableDrawer>
+
+        {/* Drawer section ends  */}
+
+      </ThemeProvider>
   );
 // MainContainer ends
 }
