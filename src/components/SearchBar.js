@@ -97,20 +97,31 @@ const  handleChange = (e)=>{
     if(SearchParam.length >= 5)
     {
 
+      const obj = JSON.stringify(Filters);
+
+      console.log(obj)
+
       // testting
-      await axios.get(`http://localhost/partner/apis/getCourseList/?filter=${JSON.stringify(Filters)}`)
-      .then((data)=>{console.log(data);})
+      await axios.get(`http://localhost/partner/apis/getCourseList/?q=${e.target.value}&filter=${obj}`,{
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'JWT fefege...'
+        }})
+      .then((data)=>{
+        setCourseList(data.data);
+        console.log(data);
+      })
       .catch((err)=>{console.log(err);})
 
-      // For fetching the data for database
-      await axios.get(`https://api.classbazaar.com/api/v2/courses/?q=${e.target.value}&filter=&subjects=all&provider=&feeFilter=&startDateFilter=&providerOffset=0::0::0::0::0::0::0`)
-      .then((data)=>{
-        setCourseList(data.data.data);
-        console.log(data.data.data)
-      })
-      .catch((err)=>{
-        console.log(err)
-      })
+      // // For fetching the data for database
+      // await axios.get(`https://api.classbazaar.com/api/v2/courses/?q=${e.target.value}&filter=&subjects=all&provider=&feeFilter=&startDateFilter=&providerOffset=0::0::0::0::0::0::0`)
+      // .then((data)=>{
+      //   setCourseList(data.data.data);
+      //   console.log(data.data.data)
+      // })
+      // .catch((err)=>{
+      //   console.log(err)
+      // })
     }
     
 
