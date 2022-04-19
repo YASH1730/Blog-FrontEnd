@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { TextField, SwipeableDrawer, Grid, Box ,Button,FormLabel,FormControlLabel,FormGroup,Checkbox,Typography} from "@mui/material";
+import { TextField,Link , SwipeableDrawer, Grid, Box ,Button,FormLabel,FormControlLabel,FormGroup,Checkbox,Typography} from "@mui/material";
 // import {makeStyles} from '@mui/material/styles'
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -54,6 +54,14 @@ export default function SearchBar() {
 const [courseList,setCourseList] = useState([])
 const [rows,setRows] = useState([])
 
+// state for search 
+const [query,setQuery] = useState('')
+
+
+// TOKEN 
+
+const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6MTQsIkNvbnRhY3ROdW1iZXIiOiI4MzAyMDQzMjU5IiwiRW1haWwiOiJoYXJzaHNhaHUzMDAyQGdtYWlsLmNvbSIsIkdTVElOIjoiMjlHR0dHRzEzMTRSOVo3IiwiTmFtZSI6IkhhcnNoIFNhaHUiLCJBZGRyZXNzIjoiRGFyZ2FoIEJhemFyLCBBam1lciIsImlhdCI6MTY1MDExMzEwMX0.SoNdSCsbudcJfIxtkeMryw2fMsvBWJc4DsJ2F-N2cVw'
+
 // for drawer
 const [isDrawerOpen,setIsDrawerOpen] = useState(false)
 
@@ -75,9 +83,9 @@ const [Filters,setFilters] = useState(
 
 // for ckech box handler 
 
-const  handleChange = (e)=>{
-  console.log(e.target.value)
-  console.log(e.target.checked)
+const  handleChange = async(e)=>{
+  // console.log(e.target.value)
+  // console.log(e.target.checked)
 
 
   setFilters({
@@ -90,22 +98,19 @@ const  handleChange = (e)=>{
 
 // handelSeacrch bar
   const handelSearch = async(e) =>{
-    // console.log(e.target.value)
   
-    const SearchParam = e.target.value;
+    const SearchParam = e.target.value ;
+
+    console.log(SearchParam)
 
     if(SearchParam.length >= 5)
     {
 
       const obj = JSON.stringify(Filters);
 
-      console.log(obj)
-
-      // testting
-      await axios.get(`http://localhost/partner/apis/getCourseList/?q=${e.target.value}&filter=${obj}`,{
+      await axios.get(`http://localhost/partner/apis/getCourseList/?q=${SearchParam}&filter=${obj}`,{
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'JWT fefege...'
+            'Authorization' : `Api-Key ${Token}`
         }})
       .then((data)=>{
         setCourseList(data.data);
@@ -136,7 +141,11 @@ const columns = [
   {field : 'price',headerName : 'Price (Rs) ',width : 100},
   {field : 'subjects',headerName : 'Subjects',width : 200},
   {field : 'university',headerName : 'University',width : 200},
-  {field : 'start_date',headerName : 'Start Date',width : 200}];
+  {field : 'start_date',headerName : 'Start Date',width : 100},
+  {field : 'link',headerName : 'Link',width : 100,renderCell : (cellvalue) => (
+    // console.log(cellvalue);
+    <Link href={`https://www.classbazaar.com/coursedetails/${cellvalue.value.provider}/${cellvalue.value.uuid}`}>Link</Link>
+  )}];
 
   useEffect(() => {
     
@@ -149,7 +158,8 @@ const columns = [
         price : row.price || 'Free',
         subjects : row.subjects,
         university : row.university,
-        start_date : row.start_date || 'Flexible'
+        start_date : row.start_date || 'Flexible',
+        link : row
       })}))
     
   }, [courseList]);
