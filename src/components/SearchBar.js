@@ -144,7 +144,7 @@ const columns = [
   {field : 'start_date',headerName : 'Start Date',width : 100},
   {field : 'link',headerName : 'Link',width : 100,renderCell : (cellvalue) => (
     // console.log(cellvalue);
-    <Link href={`https://www.classbazaar.com/coursedetails/${cellvalue.value.provider}/${cellvalue.value.uuid}`}>Link</Link>
+    <Link target="_blank" href={`https://www.classbazaar.com/coursedetails/${cellvalue.value.provider}/${cellvalue.value.uuid}`}>Link</Link>
   )}];
 
   useEffect(() => {
