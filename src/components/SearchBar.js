@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { TextField,Link , SwipeableDrawer, Grid, Box ,Button,FormLabel,FormControlLabel,FormGroup,Checkbox,Typography} from "@mui/material";
+import { TextField , SwipeableDrawer, Grid, Box ,Button,FormLabel,FormControlLabel,FormGroup,Checkbox,Typography} from "@mui/material";
 // import {makeStyles} from '@mui/material/styles'
 import { makeStyles } from '@material-ui/styles';
 import {
@@ -54,8 +54,7 @@ export default function SearchBar() {
 const [courseList,setCourseList] = useState([])
 const [rows,setRows] = useState([])
 
-// state for search 
-const [query,setQuery] = useState('')
+
 
 
 // TOKEN 
@@ -119,7 +118,7 @@ const  handleChange = async(e)=>{
       .catch((err)=>{console.log(err);})
 
       // // For fetching the data for database
-      // await axios.get(`https://api.classbazaar.com/api/v2/courses/?q=${e.target.value}&filter=&subjects=all&provider=&feeFilter=&startDateFilter=&providerOffset=0::0::0::0::0::0::0`)
+      // await axios.get(`https://api.classbazaar.com/api/v2/courses/?q=crypto&filter=&subjects=all&provider=all&feeFilter=&startDateFilter=&providerOffset=0::0::0::0::0::0::0`)
       // .then((data)=>{
       //   setCourseList(data.data.data);
       //   console.log(data.data.data)
@@ -154,7 +153,7 @@ const columns = [
         title : row.title,
         price : row.price || 'Free',
         subjects : row.subjects,
-        university : row.university,
+        university : row.university || row.provider,
         start_date : row.start_date || 'Flexible'
       })}))
     
@@ -191,7 +190,7 @@ const columns = [
           className = {classes.textfeild}
           />
 {/* // filter button */}
-          <Button variant = 'contained' onClick = {()=>{setIsDrawerOpen(true)}} color = 'primary' >Filter</Button>
+          {/* <Button variant = 'contained' onClick = {()=>{setIsDrawerOpen(true)}} color = 'primary' >Filter</Button> */}
         </Grid>
 
       </Grid>
@@ -243,7 +242,6 @@ const columns = [
                       <FormControlLabel checked = {Filters.Subscription} control={<Checkbox onChange = {handleChange} value = 'Subscription' />} label="Subscription" />
             </FormGroup>
             </Box>
-            {/* {list(anchor)} */}
           </SwipeableDrawer>
 
         {/* Drawer section ends  */}
