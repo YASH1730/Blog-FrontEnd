@@ -139,27 +139,23 @@ const columns = [
   {field : 'provider',headerName : 'Provider',width : 100},
   {field : 'title',headerName : 'Title',width : 500},
   {field : 'price',headerName : 'Price (Rs) ',width : 100},
-  {field : 'subjects',headerName : 'Subjects',width : 200},
+  {field : 'subjects',headerName : 'Subjects',width : 300},
   {field : 'university',headerName : 'University',width : 200},
   {field : 'start_date',headerName : 'Start Date',width : 100},
-  {field : 'link',headerName : 'Link',width : 100,renderCell : (cellvalue) => (
-    // console.log(cellvalue);
-    <Link target="_blank" href={`https://www.classbazaar.com/coursedetails/${cellvalue.value.provider}/${cellvalue.value.uuid}`}>Link</Link>
-  )}];
+  ];
 
   useEffect(() => {
     
     setRows(courseList.map((row)=>{
   
       return ({
-        id : row.index,
+        id : row.uuid,
         provider : row.provider,
         title : row.title,
         price : row.price || 'Free',
         subjects : row.subjects,
         university : row.university,
-        start_date : row.start_date || 'Flexible',
-        link : row
+        start_date : row.start_date || 'Flexible'
       })}))
     
   }, [courseList]);
@@ -217,6 +213,12 @@ const columns = [
   components={{
     Pagination: CustomPagination,
   }}
+  onRowClick = {(param) => { 
+    window.open(
+      `https://www.classbazaar.com/coursedetails/${param.row.provider}/${param.row.id}`,
+      '_blank' // <- This is what makes it open in a new window.
+    )
+    }}
 />
 </Box> }
         </Grid>
